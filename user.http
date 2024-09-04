@@ -1,0 +1,64 @@
+###
+POST http://localhost:5000/users/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "surname": "Кот",
+  "name": "Игорь",
+  "middleName": "Александрович",
+  "email": "it2@severskcable.ru",
+  "role": "Администратор",
+  "password": "12345"
+ }
+
+###
+GET http://localhost:5000/ HTTP/1.1
+
+###
+GET http://localhost:5000/users/ HTTP/1.1
+Content-Type: application/json
+
+
+###
+GET http://localhost:5000/breaks/ HTTP/1.1
+Content-Type: application/json
+
+###
+POST http://localhost:5000/breaks/create HTTP/1.1
+Content-Type: application/json
+
+{
+  "breakName": "Ролики",
+  "registerPerson": "66d14354039b2f5d6b2d2147",
+  "registerDate": "12312412",
+  "priority": 1,
+  "status": false,
+  "stages": null,
+  "machine": "66d56c486ef45e1624a88b97"
+}
+
+###
+POST http://localhost:5000/machines/create HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "Отрезной станок",
+  "status": "Работает"
+}
+
+###
+GET http://localhost:5000/machines/ HTTP/1.1
+Content-Type: application/json
+
+###
+POST http://localhost:5000/break-types-by-machine/create HTTP/1.1
+Content-Type: application/json
+
+{
+  "description": "Отломилась ручка",
+  "machine": "66d56c486ef45e1624a88b97"
+}
+
+###
+GET http://localhost:5000/break-types-by-machine/ HTTP/1.1
+Content-Type: application/json

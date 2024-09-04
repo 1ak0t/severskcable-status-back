@@ -2,7 +2,9 @@ import {LoggerInterface} from "./logger.interface.js";
 import {Logger as PinoInstance, pino, transport} from "pino";
 import {getCurrentModuleDirectoryPath} from "../../helpers/index.js";
 import {resolve} from "node:path";
+import {injectable} from "inversify";
 
+@injectable()
 export class PinoLogger implements LoggerInterface {
     private readonly logger: PinoInstance;
 
