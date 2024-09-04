@@ -1,10 +1,25 @@
-import {PinoLogger} from "./shared/libs/logger/index.js";
+import 'reflect-metadata';
 import {RestApplication} from "./rest/index.js";
+import {Container} from "inversify";
+import {Component} from "./shared/types/index.js";
+import {createRestApplicationContainer} from "./rest/rest.container.js";
+import {createUserContainer} from "./shared/modules/user/index.js";
+import {createBreakContainer} from "./shared/modules/break/break.container.js";
+import {createMachineContainer} from "./shared/modules/machine/machine.container.js";
+import {
+    createBreakTypeByMachineContainer
+} from "./shared/modules/break-type-by-machine/break-type-by-machine.container.js";
 
 async function bootstrap() {
-    const logger = new PinoLogger();
+    const appContainer = Container.merge(
+        createRestApplicationContainer(),
+        createUserContainer(),
+        createBreakContainer(),
+        createMachineContainer(),
+        createBreakTypeByMachineContainer()
+    );
 
-    const application = new RestApplication(logger);
+    const application = appContainer.get<RestApplication>(Component.RestApplication);
     await application.init();
 }
 
