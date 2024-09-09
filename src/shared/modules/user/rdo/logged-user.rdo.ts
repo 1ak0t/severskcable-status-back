@@ -1,7 +1,16 @@
 import {Expose} from "class-transformer";
 import {UserRoles} from "../../../types/user.type.js";
 
-export class UserRdo {
+export class LoggedUserRdo {
+    @Expose()
+    public id: string;
+
+    @Expose()
+    public token: string;
+
+    @Expose()
+    public email: string;
+
     @Expose()
     public surname: string;
 
@@ -10,9 +19,6 @@ export class UserRdo {
 
     @Expose()
     public middleName: string;
-
-    @Expose()
-    public email: string;
 
     @Expose()
     public role: UserRoles[];

@@ -3,13 +3,25 @@ POST http://localhost:5000/users/register HTTP/1.1
 Content-Type: application/json
 
 {
-  "surname": "Кот",
-  "name": "Игорь",
-  "middleName": "Александрович",
-  "email": "it2@severskcable.ru",
-  "role": "Администратор",
+  "surname": "Касперович",
+  "name": "Олег",
+  "middleName": "Владимирович",
+  "email": "ovk@severskcable.ru",
+  "role": [
+    "ИТР",
+    "Генеральный директор"
+  ],
   "password": "12345"
  }
+
+###
+POST http://localhost:5000/users/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "it2@severskcable.ru",
+  "password": "12345"
+}
 
 ###
 GET http://localhost:5000/ HTTP/1.1
@@ -37,6 +49,20 @@ Content-Type: application/json
   "machine": "66d56c486ef45e1624a88b97"
 }
 
+
+###
+PATCH http://localhost:5000/breaks/66d82f4a54ecad33bad17bda HTTP/1.1
+Content-Type: application/json
+
+{
+  "successPerson": "66d8180613ce4f14778bc99e",
+  "successDate": "Thu, 05 Sep 2024 02:44:54 GMT",
+  "stages": "Поломка потверждена"
+}
+
+###
+DELETE http://localhost:5000/breaks/66d9517b61ab117cc609deee HTTP/1.1
+
 ###
 POST http://localhost:5000/machines/create HTTP/1.1
 Content-Type: application/json
@@ -44,6 +70,14 @@ Content-Type: application/json
 {
   "name": "Отрезной станок",
   "status": "Работает"
+}
+
+###
+PATCH http://localhost:5000/machines/66d6dcaf91558b9ce863739d HTTP/1.1
+Content-Type: application/json
+
+{
+"status": "Требует внимания"
 }
 
 ###

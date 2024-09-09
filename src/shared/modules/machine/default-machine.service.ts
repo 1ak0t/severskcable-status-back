@@ -6,6 +6,7 @@ import {types} from "@typegoose/typegoose";
 import {MachineEntity} from "./machine.entity.js";
 import {CreateMachineDto} from "./dto/create-machine.dto.js";
 import {DocumentType} from "@typegoose/typegoose/lib/types.js";
+import {UpdateMachineDto} from "./dto/update-machine.dto.js";
 
 @injectable()
 export class DefaultMachineService implements MachineServiceInterface {
@@ -24,5 +25,11 @@ export class DefaultMachineService implements MachineServiceInterface {
 
     public async find(): Promise<DocumentType<MachineEntity>[]> {
         return this.machineModel.find();
+    }
+
+    public async updateById(machineId: string, dto: UpdateMachineDto): Promise<DocumentType<MachineEntity> | null> {
+
+        return this.machineModel
+            .findByIdAndUpdate(machineId, dto, {new: true});
     }
 }

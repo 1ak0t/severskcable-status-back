@@ -3,7 +3,7 @@ import {MachinesStatus} from "../../../types/machine.type.js";
 
 export class MachineRdo {
     @Expose()
-    public _id: string;
+    public id: string;
     @Expose()
     public name: boolean;
     @Expose()

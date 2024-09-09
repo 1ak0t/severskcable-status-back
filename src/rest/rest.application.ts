@@ -7,6 +7,8 @@ import {DatabaseClientInterface} from "../shared/libs/database-client/database-c
 import {getMongoURI} from "../shared/helpers/index.js";
 import express, {Express} from "express";
 import {ControllerInterface, ExceptionFilterInterface} from "../shared/libs/rest/index.js";
+import {ParseTokenMiddleware} from "../shared/libs/rest/middleware/parse-token.middleware.js";
+import cors from "cors";
 
 @injectable()
 export class RestApplication {
@@ -19,7 +21,8 @@ export class RestApplication {
         @inject(Component.BreakController) private readonly breakController: ControllerInterface,
         @inject(Component.MachineController) private readonly machineController: ControllerInterface,
         @inject(Component.BreakTypeByMachineController) private readonly breakTypeByMachineController: ControllerInterface,
-        @inject(Component.ExceptionFilter) private readonly exceptionFilter: ExceptionFilterInterface
+        @inject(Component.ExceptionFilter) private readonly exceptionFilter: ExceptionFilterInterface,
+        @inject(Component.AuthExceptionFilter) private readonly authExceptionFilter: ExceptionFilterInterface
     ) {
         this.server = express();
     }
@@ -49,10 +52,15 @@ export class RestApplication {
     }
 
     private async _initMiddlewares() {
+        const authenticateMiddleware = new ParseTokenMiddleware(this.config.get('JWT_SECRET'));
+
         this.server.use(express.json());
+        this.server.use(authenticateMiddleware.execute.bind(authenticateMiddleware));
+        this.server.use(cors());
     }
 
     private async _initExceptionFilter() {
+        this.server.use(this.authExceptionFilter.catch.bind(this.authExceptionFilter));
         this.server.use(this.exceptionFilter.catch.bind(this.exceptionFilter));
     }
 
