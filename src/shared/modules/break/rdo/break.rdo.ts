@@ -5,7 +5,7 @@ import {UserRdo} from "../../user/index.js";
 
 export class BreakRdo {
     @Expose()
-    public _id: string;
+    public id: string;
     @Expose()
     public breakName: string;
     @Expose()

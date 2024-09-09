@@ -19,7 +19,7 @@ export class BreakTypeByMachineController extends BaseControllerAbstract {
         this.logger.info('Register routes for BreakTypeByMachineController...');
 
         this.addRoute({path: '/', method: HttpMethodEnum.Get, handler: this.getAll});
-        this.addRoute({path: '/create', method: HttpMethodEnum.Post, handler: this.create});
+        this.addRoute({path: '/', method: HttpMethodEnum.Post, handler: this.create});
     }
 
     public async getAll(_req: Request, res: Response): Promise<void> {

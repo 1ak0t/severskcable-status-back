@@ -16,4 +16,6 @@ export const Component = {
     BreakTypeByMachineModel:Symbol.for('BreakTypeByMachineModel'),
     BreakTypeByMachineService:Symbol.for('BreakTypeByMachineService'),
     BreakTypeByMachineController:Symbol.for('BreakTypeByMachineController'),
+    AuthService:Symbol.for('AuthService'),
+    AuthExceptionFilter:Symbol.for('AuthExceptionFilter'),
 } as const;
