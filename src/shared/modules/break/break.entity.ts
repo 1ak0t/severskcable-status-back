@@ -20,24 +20,40 @@ export class BreakEntity extends defaultClasses.TimeStamps{
     public registerPerson: Ref<UserEntity>;
     @prop({required: true})
     public registerDate: string;
+    @prop()
+    public registerComment?: string;
+    @prop()
+    public registerImage?: string;
     @prop({
         ref: UserEntity,
     })
     public successPerson?: Ref<UserEntity>;
     @prop()
     public successDate?: string;
+    @prop()
+    public successComment?: string;
+    @prop()
+    public successImage?: string;
     @prop({
         ref: UserEntity,
     })
     public repairingPerson?: Ref<UserEntity>;
     @prop()
     public repairingDate?: string;
+    @prop()
+    public repairingComment?: string;
+    @prop()
+    public repairingImage?: string;
     @prop({
         ref: UserEntity,
     })
     public repairCompletedPerson?: Ref<UserEntity>;
     @prop()
     public repairCompletedDate?: string;
+    @prop()
+    public repairCompletedComment?: string;
+    @prop()
+    public repairCompletedImage?: string;
     @prop({
         ref: UserEntity,
     })
@@ -45,7 +61,9 @@ export class BreakEntity extends defaultClasses.TimeStamps{
     @prop()
     public repairEndDate?: string;
     @prop()
-    public comment?: string;
+    public repairEndComment?: string;
+    @prop()
+    public repairEndImage?: string;
     @prop({required: true})
     public priority: number;
     @prop({required: true, default: false})

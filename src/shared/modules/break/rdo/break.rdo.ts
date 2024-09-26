@@ -14,34 +14,42 @@ export class BreakRdo {
     @Expose()
     public registerDate: string;
     @Expose()
-    @Type(() => UserRdo)
-    public successPerson?: UserRdo;
+    public registerComment?: string;
     @Expose()
-    public successDate?: string;
-    @Expose()
-    @Type(() => UserRdo)
-    public repairingPerson?: UserRdo;
-    @Expose()
-    public repairingDate?: string;
+    public registerImage?: string | undefined;
     @Expose()
     @Type(() => UserRdo)
-    public repairCompletedPerson?: UserRdo;
+    successPerson?: string;
     @Expose()
-    public repairCompletedDate?: string;
+    successDate?: string;
+    @Expose()
+    successComment?: string;
+    @Expose()
+    successImage?: string | undefined;
     @Expose()
     @Type(() => UserRdo)
-    public repairEndPerson?: UserRdo;
+    repairingPerson?: string;
     @Expose()
-    public repairEndDate?: string;
+    repairingDate?: string;
     @Expose()
-    public comment?: string;
+    repairingComment?: string;
+    @Expose()
+    repairingImage?: string | undefined;
+    @Expose()
+    @Type(() => UserRdo)
+    repairCompletedPerson?: string;
+    @Expose()
+    repairCompletedDate?: string;
+    @Expose()
+    repairCompletedComment?: string;
+    @Expose()
+    repairCompletedImage?: string | undefined;
     @Expose()
     public priority: number;
     @Expose()
     public status: boolean;
     @Expose()
     public stages: null | RepairStage;
-
     @Expose()
     @Type(() => MachineRdo)
     public machine: MachineRdo;
