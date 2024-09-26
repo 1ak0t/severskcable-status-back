@@ -5,6 +5,7 @@ convict.addFormats(validators);
 
 export type RestSchema = {
     PORT: number;
+    SSL_PORT: number;
     SALT: string;
     DB_HOST: string;
     DB_USER: string;
@@ -12,6 +13,7 @@ export type RestSchema = {
     DB_PORT: string;
     DB_NAME: string;
     JWT_SECRET: string;
+    UPLOAD_DIRECTORY: string;
 }
 
 export const configRestSchema = convict<RestSchema>({
@@ -19,7 +21,13 @@ export const configRestSchema = convict<RestSchema>({
         doc: 'Port for incoming connection',
         format: "port",
         env: 'PORT',
-        default: 5000
+        default: 4874
+    },
+    SSL_PORT: {
+        doc: 'SSL Port for incoming connection',
+        format: "port",
+        env: 'SSL_PORT',
+        default: 4875
     },
     SALT: {
         doc: 'Salt for password hash',
@@ -62,5 +70,11 @@ export const configRestSchema = convict<RestSchema>({
         format: String,
         env: 'JWT_SECRET',
         default: null
-    }
+    },
+    UPLOAD_DIRECTORY: {
+        doc: 'Directory for upload files',
+        format: String,
+        env: 'UPLOAD_DIRECTORY',
+        default: null
+    },
 });

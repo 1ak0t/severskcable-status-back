@@ -47,7 +47,7 @@ export class DefaultBreakService implements BreakServiceInterface {
     public async updateById(breakId: string, dto: UpdateBreakDto): Promise<DocumentType<BreakEntity> | null> {
         const breaksByMachine = await this.breakModel.find({machine: dto.machine, status: false}).countDocuments();
 
-        if (dto.status && (breaksByMachine - 1) === 0) {
+        if (dto.status && (breaksByMachine - 1) === 0 && dto.machine) {
             await this.machineService.updateById(dto.machine, {status: MachinesStatus.Work});
         }
 

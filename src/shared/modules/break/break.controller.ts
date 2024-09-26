@@ -10,12 +10,20 @@ import {CreateBreakRequestType} from "./create-break-request.type.js";
 import {StatusCodes} from "http-status-codes";
 import {ParamBreakIdType} from "./types/parem-break.type.js";
 import {UpdateBreakDto} from "./dto/update-break.dto.js";
+import {UploadFileMiddleware} from "../../libs/rest/middleware/upload-file.middleware.js";
+import {ConfigInterface} from "../../libs/config/index.js";
+import {RestSchema} from "../../libs/config/rest.schema.js";
+import {UploadSuccessImageRdo} from "./rdo/upload-success-image-rdo.js";
+import {UploadRegisterImageRdo} from "./rdo/upload-register-image-rdo.js";
+import {UploadRepairingImageRdo} from "./rdo/upload-repairing-image-rdo.js";
+import {UploadRepairCompletedImageRdo} from "./rdo/upload-repair-completed-image-rdo.js";
 
 @injectable()
 export class BreakController extends BaseControllerAbstract {
     constructor(
         @inject(Component.Logger) protected readonly logger: LoggerInterface,
         @inject(Component.BreakService) private readonly breakService: BreakServiceInterface,
+        @inject(Component.Config) private readonly configService: ConfigInterface<RestSchema>
     ) {
         super(logger);
 
@@ -25,6 +33,38 @@ export class BreakController extends BaseControllerAbstract {
         this.addRoute({path: '/', method: HttpMethodEnum.Post, handler: this.create});
         this.addRoute({path: '/:breakId', method: HttpMethodEnum.Patch, handler: this.update});
         this.addRoute({path: '/:breakId', method: HttpMethodEnum.Delete, handler: this.delete});
+        this.addRoute({
+            path: '/:breakId/success-image',
+            method: HttpMethodEnum.Post,
+            handler: this.uploadSuccessImage,
+            middlewares: [
+                new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'image')
+            ]
+        });
+        this.addRoute({
+            path: '/:breakId/register-image',
+            method: HttpMethodEnum.Post,
+            handler: this.uploadRegisterImage,
+            middlewares: [
+                new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'image')
+            ]
+        });
+        this.addRoute({
+            path: '/:breakId/repairing-image',
+            method: HttpMethodEnum.Post,
+            handler: this.uploadRepairingImage,
+            middlewares: [
+                new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'image')
+            ]
+        });
+        this.addRoute({
+            path: '/:breakId/repair-completed-image',
+            method: HttpMethodEnum.Post,
+            handler: this.uploadRepairCompletedImage,
+            middlewares: [
+                new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'image')
+            ]
+        });
     }
 
     public async getAll(_req: Request, res: Response): Promise<void> {
@@ -68,5 +108,33 @@ export class BreakController extends BaseControllerAbstract {
         }
 
         this.noContent(res, breaks)
+    }
+
+    public async uploadSuccessImage({ params, file } : Request<ParamBreakIdType>, res: Response) {
+        const { breakId } = params;
+        const updateDto = { successImage: file?.filename };
+        await this.breakService.updateById(breakId, updateDto);
+        this.created(res, fillDTO(UploadSuccessImageRdo, updateDto));
+    }
+
+    public async uploadRegisterImage({ params, file } : Request<ParamBreakIdType>, res: Response) {
+        const { breakId } = params;
+        const updateDto = { registerImage: file?.filename };
+        await this.breakService.updateById(breakId, updateDto);
+        this.created(res, fillDTO(UploadRegisterImageRdo, updateDto));
+    }
+
+    public async uploadRepairingImage({ params, file } : Request<ParamBreakIdType>, res: Response) {
+        const { breakId } = params;
+        const updateDto = { repairingImage: file?.filename };
+        await this.breakService.updateById(breakId, updateDto);
+        this.created(res, fillDTO(UploadRepairingImageRdo, updateDto));
+    }
+
+    public async uploadRepairCompletedImage({ params, file } : Request<ParamBreakIdType>, res: Response) {
+        const { breakId } = params;
+        const updateDto = { repairCompletedImage: file?.filename };
+        await this.breakService.updateById(breakId, updateDto);
+        this.created(res, fillDTO(UploadRepairCompletedImageRdo, updateDto));
     }
 }

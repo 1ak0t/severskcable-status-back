@@ -4,6 +4,7 @@
 /lib/
 /dist/
 /docs/
+/sslcert/
 .idea/*
 
 .DS_Store
@@ -12,3 +13,4 @@ coverage
 .env
 
 /upload/
+src/rest/rest.application.ts
