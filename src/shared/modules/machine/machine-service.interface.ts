@@ -7,4 +7,5 @@ export interface MachineServiceInterface {
     create(dto: CreateMachineDto): Promise<DocumentType<MachineEntity>>;
     find(): Promise<DocumentType<MachineEntity>[]>;
     updateById(machineId: string, dto: UpdateMachineDto): Promise<DocumentType<MachineEntity> | null>;
+    findById(machineId: string): Promise<DocumentType<MachineEntity> | null>;
 }

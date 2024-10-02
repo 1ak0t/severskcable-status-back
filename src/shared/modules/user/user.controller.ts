@@ -13,6 +13,9 @@ import {StatusCodes} from "http-status-codes";
 import {LoginUserRequest} from "./login-user-request.js";
 import {LoggedUserRdo} from "./rdo/logged-user.rdo.js";
 import {AuthServiceInterface} from "../auth/auth-service.interface.js";
+import {ParamUserType} from "./types/param-user.type.js";
+import {PushSubscription} from "web-push";
+import {SubscriptionServiceInterface} from "../subscription/subscription-service.interface.js";
 
 @injectable()
 export class UserController extends BaseControllerAbstract {
@@ -20,7 +23,8 @@ export class UserController extends BaseControllerAbstract {
         @inject(Component.Logger) protected readonly logger: LoggerInterface,
         @inject(Component.UserService) private readonly userService: UserServiceInterface,
         @inject(Component.Config) private readonly configService: ConfigInterface<RestSchema>,
-        @inject(Component.AuthService) private readonly authService: AuthServiceInterface
+        @inject(Component.AuthService) private readonly authService: AuthServiceInterface,
+        @inject(Component.SubscriptionService) private readonly subscriptionService: SubscriptionServiceInterface
     ) {
         super(logger);
 
@@ -30,6 +34,7 @@ export class UserController extends BaseControllerAbstract {
         this.addRoute({path: '/', method: HttpMethodEnum.Get, handler: this.getAll});
         this.addRoute({path: '/login', method: HttpMethodEnum.Post, handler: this.login});
         this.addRoute({path: '/login', method: HttpMethodEnum.Get, handler: this.checkAuthenticate});
+        this.addRoute({path: '/:userId/subscribe', method: HttpMethodEnum.Post, handler: this.subscribe});
     }
 
     public async create(
@@ -85,5 +90,20 @@ export class UserController extends BaseControllerAbstract {
         }
 
         this.ok(res, fillDTO(LoggedUserRdo, foundedUser));
+    }
+
+    public async subscribe(
+        {body, params} : Request<ParamUserType, unknown, PushSubscription>,
+        res: Response,
+    ): Promise<void> {
+        const userId = params.userId;
+        this.logger.info(`${body} ${userId}`);
+
+        console.log(body)
+
+        const subscription = await this.subscriptionService.create(body);
+        await this.userService.findByIdAndUpdate(userId, {subscription: subscription.id});
+
+        this.created(res, "Success");
     }
 }

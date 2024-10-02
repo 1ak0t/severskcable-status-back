@@ -14,6 +14,8 @@ export type RestSchema = {
     DB_NAME: string;
     JWT_SECRET: string;
     UPLOAD_DIRECTORY: string;
+    SUBSCRIBE_PUB_KEY: string;
+    SUBSCRIBE_PRIV_KEY: string;
 }
 
 export const configRestSchema = convict<RestSchema>({
@@ -75,6 +77,18 @@ export const configRestSchema = convict<RestSchema>({
         doc: 'Directory for upload files',
         format: String,
         env: 'UPLOAD_DIRECTORY',
+        default: null
+    },
+    SUBSCRIBE_PRIV_KEY: {
+        doc: 'Subscription private key',
+        format: String,
+        env: 'SUBSCRIBE_PRIV_KEY',
+        default: null
+    },
+    SUBSCRIBE_PUB_KEY: {
+        doc: 'Subscription public key',
+        format: String,
+        env: 'SUBSCRIBE_PUB_KEY',
         default: null
     },
 });
