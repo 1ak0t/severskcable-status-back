@@ -1,6 +1,7 @@
 import {UserRoles, UserType} from "../../types/user.type.js";
-import {defaultClasses, getModelForClass, modelOptions, prop} from "@typegoose/typegoose";
+import {defaultClasses, getModelForClass, modelOptions, prop, Ref} from "@typegoose/typegoose";
 import {createSHA256} from "../../helpers/index.js";
+import {SubscriptionEntity} from "../subscription/subscription.entity.js";
 
 export interface UserEntity extends defaultClasses.Base {}
 
@@ -35,6 +36,12 @@ export class UserEntity extends defaultClasses.TimeStamps implements UserType {
 
     @prop({required: true})
     public password?: string;
+
+    @prop({
+        ref: SubscriptionEntity,
+        required: true,
+    })
+    subscription: Ref<SubscriptionEntity>;
 
     constructor(userData: UserType) {
         super();

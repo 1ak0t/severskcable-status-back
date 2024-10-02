@@ -9,5 +9,5 @@ export class CreateBreakDto {
     priority: number;
     status: boolean;
     stages: null | RepairStage;
-    machineId: string;
+    machine: string;
 }

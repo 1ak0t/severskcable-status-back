@@ -10,6 +10,7 @@ import {
     createBreakTypeByMachineContainer
 } from "./shared/modules/break-type-by-machine/break-type-by-machine.container.js";
 import {createAuthContainer} from "./shared/modules/auth/auth.container.js";
+import {createSubscriptionContainer} from "./shared/modules/subscription/subscription.container.js";
 
 async function bootstrap() {
     const appContainer = Container.merge(
@@ -18,7 +19,8 @@ async function bootstrap() {
         createBreakContainer(),
         createMachineContainer(),
         createBreakTypeByMachineContainer(),
-        createAuthContainer()
+        createAuthContainer(),
+        createSubscriptionContainer(),
     );
 
     const application = appContainer.get<RestApplication>(Component.RestApplication);

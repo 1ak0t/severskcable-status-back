@@ -32,4 +32,8 @@ export class DefaultMachineService implements MachineServiceInterface {
         return this.machineModel
             .findByIdAndUpdate(machineId, dto, {new: true});
     }
+
+    public async findById(machineId: string): Promise<DocumentType<MachineEntity> | null> {
+        return this.machineModel.findById(machineId).exec();
+    }
 }

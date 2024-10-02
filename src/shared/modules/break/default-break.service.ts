@@ -9,6 +9,10 @@ import {BreakEntity} from "./break.entity.js";
 import {UpdateBreakDto} from "./dto/update-break.dto.js";
 import {MachinesStatus} from "../../types/machine.type.js";
 import {MachineServiceInterface} from "../machine/machine-service.interface.js";
+import pkg from 'web-push';
+import {getMachineStatusByPriority} from "../../helpers/common.js";
+import {SubscriptionServiceInterface} from "../subscription/subscription-service.interface.js";
+const { sendNotification } = pkg;
 
 @injectable()
 export class DefaultBreakService implements BreakServiceInterface {
@@ -16,6 +20,7 @@ export class DefaultBreakService implements BreakServiceInterface {
         @inject(Component.Logger) private readonly logger: LoggerInterface,
         @inject(Component.BreakModel) private readonly breakModel: types.ModelType<BreakEntity>,
         @inject(Component.MachineService) private readonly machineService: MachineServiceInterface,
+        @inject(Component.SubscriptionService) private readonly subscriptionService: SubscriptionServiceInterface
     ) {
     }
 
@@ -28,6 +33,22 @@ export class DefaultBreakService implements BreakServiceInterface {
             'repairCompletedPerson'
         ]);
         this.logger.info(`New break register: ${dto.breakName}, ${dto.registerPerson}`);
+
+
+        const machine = await this.machineService.findById(dto.machine);
+        const subscriptions = await this.subscriptionService.getAll();
+
+        const notificationObj = {
+            title: `Новая поломка оборудования - ${machine?.name}`,
+            text: `Поломка: ${dto.breakName}\nПриоритет: ${getMachineStatusByPriority(dto.priority)}`,
+            img: '/icons/icon-72x72.png'
+        }
+
+        if (subscriptions) {
+            subscriptions.map(sub => {
+                sendNotification(sub, JSON.stringify(notificationObj)).catch(e => this.logger.info(e));
+            })
+        }
 
         return result;
     }
@@ -51,7 +72,7 @@ export class DefaultBreakService implements BreakServiceInterface {
             await this.machineService.updateById(dto.machine, {status: MachinesStatus.Work});
         }
 
-        return this.breakModel
+        const updateById = await this.breakModel
             .findByIdAndUpdate(breakId, dto, {new: true})
             .populate([
                 'machine',
@@ -61,6 +82,35 @@ export class DefaultBreakService implements BreakServiceInterface {
                 'repairCompletedPerson'
             ])
             .exec();
+
+        if(dto.machine) {
+            const machine = await this.machineService.findById(dto.machine);
+            const subscriptions = await this.subscriptionService.getAll();
+            let notificationObj = {};
+
+            if (updateById?.stages !== null) {
+                notificationObj = {
+                    title: `Изменен статус поломки - ${machine?.name}`,
+                    text: `Поломка: ${updateById?.breakName}\nНовый статус: ${updateById?.stages}`,
+                    img: '/icons/icon-72x72.png'
+                }
+            } else {
+                notificationObj = {
+                    title: `Ремонт поломки выполнен - ${machine?.name}`,
+                    text: `Поломка: ${updateById?.breakName}\nНовый статус: Завершен`,
+                    img: '/icons/icon-72x72.png'
+                }
+            }
+
+
+            if (subscriptions) {
+                subscriptions.map(sub => {
+                    sendNotification(sub, JSON.stringify(notificationObj)).catch(e => this.logger.info(e));
+                })
+            }
+        }
+
+        return updateById;
     }
 
     public deleteById(breakId: string): Promise<DocumentType<BreakEntity> | null> {

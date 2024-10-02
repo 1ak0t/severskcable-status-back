@@ -9,6 +9,8 @@ import express, {Express} from "express";
 import {ControllerInterface, ExceptionFilterInterface} from "../shared/libs/rest/index.js";
 import {ParseTokenMiddleware} from "../shared/libs/rest/middleware/parse-token.middleware.js";
 import cors from "cors";
+import pkg from 'web-push';
+const { setVapidDetails } = pkg;
 
 @injectable()
 export class RestApplication {
@@ -87,6 +89,8 @@ export class RestApplication {
         this.logger.info('Try to init server...');
         await this._initServer();
         this.logger.info(`Server started on http://localhost:${this.config.get('PORT')}`);
+
+        setVapidDetails('mailto:it2@severskcable.ru', this.config.get('SUBSCRIBE_PUB_KEY'), this.config.get('SUBSCRIBE_PRIV_KEY'));
 
     }
 }
