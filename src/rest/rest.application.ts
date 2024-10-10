@@ -22,6 +22,7 @@ export class RestApplication {
         @inject(Component.UserController) private readonly userController: ControllerInterface,
         @inject(Component.BreakController) private readonly breakController: ControllerInterface,
         @inject(Component.MachineController) private readonly machineController: ControllerInterface,
+        @inject(Component.NotificationController) private readonly notificationController: ControllerInterface,
         @inject(Component.BreakTypeByMachineController) private readonly breakTypeByMachineController: ControllerInterface,
         @inject(Component.ExceptionFilter) private readonly exceptionFilter: ExceptionFilterInterface,
         @inject(Component.AuthExceptionFilter) private readonly authExceptionFilter: ExceptionFilterInterface
@@ -51,6 +52,7 @@ export class RestApplication {
         this.server.use('/breaks', this.breakController.router);
         this.server.use('/machines', this.machineController.router);
         this.server.use('/break-types-by-machine', this.breakTypeByMachineController.router);
+        this.server.use('/notifications', this.notificationController.router);
     }
 
     private async _initMiddlewares() {

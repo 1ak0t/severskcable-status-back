@@ -16,6 +16,8 @@ import {AuthServiceInterface} from "../auth/auth-service.interface.js";
 import {ParamUserType} from "./types/param-user.type.js";
 import {PushSubscription} from "web-push";
 import {SubscriptionServiceInterface} from "../subscription/subscription-service.interface.js";
+import {ValidateObjectidMiddleware} from "../../libs/rest/middleware/validate-objectid.middleware.js";
+import {PrivateRouteMiddleware} from "../../libs/rest/middleware/private-route.middleware.js";
 
 @injectable()
 export class UserController extends BaseControllerAbstract {
@@ -31,10 +33,31 @@ export class UserController extends BaseControllerAbstract {
         this.logger.info('Register routes for UserController...');
 
         this.addRoute({path: '/register', method: HttpMethodEnum.Post, handler: this.create});
-        this.addRoute({path: '/', method: HttpMethodEnum.Get, handler: this.getAll});
+        this.addRoute({
+            path: '/',
+            method: HttpMethodEnum.Get,
+            handler: this.getAll,
+            middlewares: [new PrivateRouteMiddleware()]
+        });
         this.addRoute({path: '/login', method: HttpMethodEnum.Post, handler: this.login});
-        this.addRoute({path: '/login', method: HttpMethodEnum.Get, handler: this.checkAuthenticate});
-        this.addRoute({path: '/:userId/subscribe', method: HttpMethodEnum.Post, handler: this.subscribe});
+        this.addRoute({
+            path: '/login',
+            method: HttpMethodEnum.Get,
+            handler: this.checkAuthenticate,
+            middlewares: [new PrivateRouteMiddleware()]
+        });
+        this.addRoute({
+            path: '/:userId/subscribe',
+            method: HttpMethodEnum.Post,
+            handler: this.subscribe,
+            middlewares: [new ValidateObjectidMiddleware('userId'), new PrivateRouteMiddleware()]
+        });
+        this.addRoute({
+            path: '/:userId/reset-notification-status',
+            method: HttpMethodEnum.Post,
+            handler: this.resetNotificationStatus,
+            middlewares: [new ValidateObjectidMiddleware('userId'), new PrivateRouteMiddleware()]
+        });
     }
 
     public async create(
@@ -68,6 +91,7 @@ export class UserController extends BaseControllerAbstract {
         const user = await this.authService.verify(body);
         const token = await this.authService.authenticate(user);
         const responseData = fillDTO(LoggedUserRdo, {
+            id: user.id,
             surname: user.surname,
             name: user.name,
             middleName: user.middleName,
@@ -84,7 +108,7 @@ export class UserController extends BaseControllerAbstract {
         if (! foundedUser) {
             throw new HttpError(
                 StatusCodes.UNAUTHORIZED,
-                'Unauthorized',
+                'Вы не авторизованы, необходимо войти',
                 'UserController'
             );
         }
@@ -97,12 +121,20 @@ export class UserController extends BaseControllerAbstract {
         res: Response,
     ): Promise<void> {
         const userId = params.userId;
-        this.logger.info(`${body} ${userId}`);
-
-        console.log(body)
 
         const subscription = await this.subscriptionService.create(body);
         await this.userService.findByIdAndUpdate(userId, {subscription: subscription.id});
+
+        this.created(res, "Success");
+    }
+
+    public async resetNotificationStatus(
+        {params} : Request<ParamUserType, unknown, unknown>,
+        res: Response,
+    ): Promise<void> {
+        const userId = params.userId;
+
+        await this.userService.resetNotificationCount(userId);
 
         this.created(res, "Success");
     }

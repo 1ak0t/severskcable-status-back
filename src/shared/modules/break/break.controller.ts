@@ -17,6 +17,8 @@ import {UploadSuccessImageRdo} from "./rdo/upload-success-image-rdo.js";
 import {UploadRegisterImageRdo} from "./rdo/upload-register-image-rdo.js";
 import {UploadRepairingImageRdo} from "./rdo/upload-repairing-image-rdo.js";
 import {UploadRepairCompletedImageRdo} from "./rdo/upload-repair-completed-image-rdo.js";
+import {ValidateObjectidMiddleware} from "../../libs/rest/middleware/validate-objectid.middleware.js";
+import {PrivateRouteMiddleware} from "../../libs/rest/middleware/private-route.middleware.js";
 
 @injectable()
 export class BreakController extends BaseControllerAbstract {
@@ -29,16 +31,38 @@ export class BreakController extends BaseControllerAbstract {
 
         this.logger.info('Register routes for BreakController...');
 
-        this.addRoute({path: '/', method: HttpMethodEnum.Get, handler: this.getAll});
-        this.addRoute({path: '/', method: HttpMethodEnum.Post, handler: this.create});
-        this.addRoute({path: '/:breakId', method: HttpMethodEnum.Patch, handler: this.update});
-        this.addRoute({path: '/:breakId', method: HttpMethodEnum.Delete, handler: this.delete});
+        this.addRoute({
+            path: '/',
+            method: HttpMethodEnum.Get,
+            handler: this.getAll,
+            middlewares: [new PrivateRouteMiddleware()]
+        });
+        this.addRoute({
+            path: '/',
+            method: HttpMethodEnum.Post,
+            handler: this.create,
+            middlewares: [new PrivateRouteMiddleware()]
+        });
+        this.addRoute({
+            path: '/:breakId',
+            method: HttpMethodEnum.Patch,
+            handler: this.update,
+            middlewares: [new ValidateObjectidMiddleware('breakId'), new PrivateRouteMiddleware()]
+        });
+        this.addRoute({
+            path: '/:breakId',
+            method: HttpMethodEnum.Delete,
+            handler: this.delete,
+            middlewares: [new ValidateObjectidMiddleware('breakId'), new PrivateRouteMiddleware()]
+        });
         this.addRoute({
             path: '/:breakId/success-image',
             method: HttpMethodEnum.Post,
             handler: this.uploadSuccessImage,
             middlewares: [
-                new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'image')
+                new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'image'),
+                new ValidateObjectidMiddleware('breakId'),
+                new PrivateRouteMiddleware()
             ]
         });
         this.addRoute({
@@ -46,7 +70,9 @@ export class BreakController extends BaseControllerAbstract {
             method: HttpMethodEnum.Post,
             handler: this.uploadRegisterImage,
             middlewares: [
-                new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'image')
+                new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'image'),
+                new ValidateObjectidMiddleware('breakId'),
+                new PrivateRouteMiddleware()
             ]
         });
         this.addRoute({
@@ -54,7 +80,9 @@ export class BreakController extends BaseControllerAbstract {
             method: HttpMethodEnum.Post,
             handler: this.uploadRepairingImage,
             middlewares: [
-                new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'image')
+                new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'image'),
+                new ValidateObjectidMiddleware('breakId'),
+                new PrivateRouteMiddleware()
             ]
         });
         this.addRoute({
@@ -62,7 +90,9 @@ export class BreakController extends BaseControllerAbstract {
             method: HttpMethodEnum.Post,
             handler: this.uploadRepairCompletedImage,
             middlewares: [
-                new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'image')
+                new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'image'),
+                new ValidateObjectidMiddleware('breakId'),
+                new PrivateRouteMiddleware()
             ]
         });
     }

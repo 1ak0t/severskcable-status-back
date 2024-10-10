@@ -9,4 +9,6 @@ export interface UserServiceInterface {
     findByEmail(email: string): Promise<DocumentType<UserEntity> | null>;
     findOrCreate(dto: CreateUserDto, salt: string): Promise<DocumentType<UserEntity>>;
     findByIdAndUpdate(userId: string, dto: UpdateUserDto): Promise<DocumentType<UserEntity> | null>;
+    increaseNotificationCount(): void;
+    resetNotificationCount(userId: string): void;
 }

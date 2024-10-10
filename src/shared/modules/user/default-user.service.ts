@@ -47,4 +47,22 @@ export class DefaultUserService implements UserServiceInterface {
     public async findByIdAndUpdate(userId: string, dto: UpdateUserDto): Promise<DocumentType<UserEntity> | null> {
         return this.userModel.findByIdAndUpdate(userId, dto, {new: true});
     }
+
+    public async increaseNotificationCount() {
+        const users = await this.userModel.find().exec();
+        users.map(user => {
+            if (user.notificationsCount !== undefined) {
+                this.findByIdAndUpdate(user.id, {notificationsCount: user.notificationsCount++});
+            } else {
+                this.findByIdAndUpdate(user.id, {notificationsCount: 1});
+            }
+        })
+    }
+
+    public async resetNotificationCount(userId: string) {
+        const user = await this.userModel.findById(userId);
+        if (user) {
+            await this.findByIdAndUpdate(user.id, {notificationsCount: 0});
+        }
+    }
 }

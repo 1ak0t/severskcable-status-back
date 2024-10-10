@@ -8,7 +8,7 @@ export class PrivateRouteMiddleware implements MiddlewareInterface {
         if (! tokenPayload) {
             throw new HttpError(
                 StatusCodes.UNAUTHORIZED,
-                'Unauthorized',
+                'Вы не авторизованы, необходимо войти',
                 'PrivateRouteMiddleware'
             );
         }

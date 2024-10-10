@@ -20,4 +20,7 @@ export const Component = {
     AuthExceptionFilter:Symbol.for('AuthExceptionFilter'),
     SubscriptionModel:Symbol.for('SubscriptionModel'),
     SubscriptionService:Symbol.for('SubscriptionService'),
+    NotificationModel:Symbol.for('NotificationModel'),
+    NotificationService:Symbol.for('NotificationService'),
+    NotificationController:Symbol.for('NotificationController'),
 } as const;

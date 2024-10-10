@@ -7,6 +7,7 @@ import {Request, Response} from "express";
 import {fillDTO} from "../../helpers/common.js";
 import {BreakTypeByMachineRdo} from "./rdo/break-type-by-machine.rdo.js";
 import {CreateBreakTypeRequestType} from "./create-break-type-request.type.js";
+import {PrivateRouteMiddleware} from "../../libs/rest/middleware/private-route.middleware.js";
 
 @injectable()
 export class BreakTypeByMachineController extends BaseControllerAbstract {
@@ -18,8 +19,18 @@ export class BreakTypeByMachineController extends BaseControllerAbstract {
 
         this.logger.info('Register routes for BreakTypeByMachineController...');
 
-        this.addRoute({path: '/', method: HttpMethodEnum.Get, handler: this.getAll});
-        this.addRoute({path: '/', method: HttpMethodEnum.Post, handler: this.create});
+        this.addRoute({
+            path: '/',
+            method: HttpMethodEnum.Get,
+            handler: this.getAll,
+            middlewares: [new PrivateRouteMiddleware()]
+        });
+        this.addRoute({
+            path: '/',
+            method: HttpMethodEnum.Post,
+            handler: this.create,
+            middlewares: [new PrivateRouteMiddleware()]
+        });
     }
 
     public async getAll(_req: Request, res: Response): Promise<void> {
