@@ -10,6 +10,8 @@ import {CreateMachineRequestType} from "./create-machine-request.type.js";
 import {ParamMachineidType} from "./type/param-machineid.type.js";
 import {UpdateMachineDto} from "./dto/update-machine.dto.js";
 import {StatusCodes} from "http-status-codes";
+import {ValidateObjectidMiddleware} from "../../libs/rest/middleware/validate-objectid.middleware.js";
+import {PrivateRouteMiddleware} from "../../libs/rest/middleware/private-route.middleware.js";
 
 @injectable()
 export class MachineController extends BaseControllerAbstract {
@@ -21,9 +23,24 @@ export class MachineController extends BaseControllerAbstract {
 
         this.logger.info('Register routes for MachineController...');
 
-        this.addRoute({path: '/', method: HttpMethodEnum.Get, handler: this.getAll});
-        this.addRoute({path: '/', method: HttpMethodEnum.Post, handler: this.create});
-        this.addRoute({path: '/:machineId', method: HttpMethodEnum.Patch, handler: this.update});
+        this.addRoute({
+            path: '/',
+            method: HttpMethodEnum.Get,
+            handler: this.getAll,
+            middlewares: [new PrivateRouteMiddleware()]
+        });
+        this.addRoute({
+            path: '/',
+            method: HttpMethodEnum.Post,
+            handler: this.create,
+            middlewares: [new PrivateRouteMiddleware()]
+        });
+        this.addRoute({
+            path: '/:machineId',
+            method: HttpMethodEnum.Patch,
+            handler: this.update,
+            middlewares: [new ValidateObjectidMiddleware('machineId'), new PrivateRouteMiddleware()]
+        });
     }
 
     public async getAll(_req: Request, res: Response): Promise<void> {

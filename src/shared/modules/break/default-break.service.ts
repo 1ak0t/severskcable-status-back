@@ -12,6 +12,9 @@ import {MachineServiceInterface} from "../machine/machine-service.interface.js";
 import pkg from 'web-push';
 import {getMachineStatusByPriority} from "../../helpers/common.js";
 import {SubscriptionServiceInterface} from "../subscription/subscription-service.interface.js";
+import {NotificationServiceInterface} from "../notification/notification-service.interface.js";
+import {CreateNotificationDto} from "../notification/dto/create-notification.dto.js";
+import {UserServiceInterface} from "../user/user-service.interface.js";
 const { sendNotification } = pkg;
 
 @injectable()
@@ -20,7 +23,9 @@ export class DefaultBreakService implements BreakServiceInterface {
         @inject(Component.Logger) private readonly logger: LoggerInterface,
         @inject(Component.BreakModel) private readonly breakModel: types.ModelType<BreakEntity>,
         @inject(Component.MachineService) private readonly machineService: MachineServiceInterface,
-        @inject(Component.SubscriptionService) private readonly subscriptionService: SubscriptionServiceInterface
+        @inject(Component.SubscriptionService) private readonly subscriptionService: SubscriptionServiceInterface,
+        @inject(Component.NotificationService) private readonly notificationService: NotificationServiceInterface,
+        @inject(Component.UserService) private readonly userService: UserServiceInterface
     ) {
     }
 
@@ -43,6 +48,9 @@ export class DefaultBreakService implements BreakServiceInterface {
             text: `Поломка: ${dto.breakName}\nПриоритет: ${getMachineStatusByPriority(dto.priority)}`,
             img: '/icons/icon-72x72.png'
         }
+
+        await this.notificationService.create(notificationObj);
+        await this.userService.increaseNotificationCount();
 
         if (subscriptions) {
             subscriptions.map(sub => {
@@ -102,6 +110,9 @@ export class DefaultBreakService implements BreakServiceInterface {
                 }
             }
 
+            await this.notificationService.create(notificationObj as CreateNotificationDto);
+
+            await this.userService.increaseNotificationCount();
 
             if (subscriptions) {
                 subscriptions.map(sub => {

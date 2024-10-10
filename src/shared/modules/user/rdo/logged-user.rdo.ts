@@ -22,4 +22,7 @@ export class LoggedUserRdo {
 
     @Expose()
     public role: UserRoles[];
+
+    @Expose()
+    public notificationsCount: string;
 }

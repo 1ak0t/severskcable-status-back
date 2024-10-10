@@ -3,6 +3,6 @@ import {StatusCodes} from "http-status-codes";
 
 export class UserPasswordIncorrectException extends BaseUserException {
     constructor() {
-        super(StatusCodes.UNAUTHORIZED, 'Incorrect user name or password');
+        super(StatusCodes.UNAUTHORIZED, 'Не верный логин или пароль');
     }
 }

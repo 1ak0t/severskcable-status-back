@@ -26,9 +26,12 @@ Content-Type: application/json
 GET http://localhost:5000/ HTTP/1.1
 
 ###
-GET https://corp.severskcable.ru:4875/users/ HTTP/1.1
+GET http://localhost:5000/users/ HTTP/1.1
 Content-Type: application/json
 
+###
+GET http://localhost:5000/notifications/ HTTP/1.1
+Content-Type: application/json
 
 ###
 GET http://localhost:5000/breaks/ HTTP/1.1

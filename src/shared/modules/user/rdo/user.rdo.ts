@@ -16,4 +16,7 @@ export class UserRdo {
 
     @Expose()
     public role: UserRoles[];
+
+    @Expose()
+    public notificationsCount: string;
 }
