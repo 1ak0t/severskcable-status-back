@@ -9,12 +9,16 @@ import express, {Express} from "express";
 import {ControllerInterface, ExceptionFilterInterface} from "../shared/libs/rest/index.js";
 import {ParseTokenMiddleware} from "../shared/libs/rest/middleware/parse-token.middleware.js";
 import cors from "cors";
+import * as fs from "node:fs";
+import * as https from "node:https";
 import pkg from 'web-push';
+import {globalEmitter} from "../main.rest.js";
 const { setVapidDetails } = pkg;
 
 @injectable()
 export class RestApplication {
     private readonly server: Express;
+
     constructor(
         @inject(Component.Logger) private readonly logger: LoggerInterface,
         @inject(Component.Config) private readonly config: ConfigInterface<RestSchema>,
@@ -44,7 +48,23 @@ export class RestApplication {
 
     private async _initServer() {
         const port = this.config.get('PORT');
+        const sslPort = this.config.get('SSL_PORT');
         this.server.listen(port);
+        const sslOptions = {
+            cert: fs.readFileSync('./sslcert/fullchain.pem'),
+            key: fs.readFileSync('./sslcert/privkey.pem')
+        }
+        https.createServer(sslOptions, this.server).listen(sslPort);
+        this.server.get('/connect', (_req, res) => {
+            res.writeHead(200, {
+                'Connection': 'keep-alive',
+                'Content-Type': 'text/event-stream',
+                'Cache-Control': 'no-cache',
+            });
+            globalEmitter.on('update', (message) => {
+                res.write(`data: ${JSON.stringify(message)} \n\n`)
+            })
+        })
     }
 
     private async _initControllers() {
@@ -93,6 +113,5 @@ export class RestApplication {
         this.logger.info(`Server started on http://localhost:${this.config.get('PORT')}`);
 
         setVapidDetails('mailto:it2@severskcable.ru', this.config.get('SUBSCRIBE_PUB_KEY'), this.config.get('SUBSCRIBE_PRIV_KEY'));
-
     }
 }

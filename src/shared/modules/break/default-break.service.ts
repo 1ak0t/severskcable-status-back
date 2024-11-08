@@ -15,6 +15,7 @@ import {SubscriptionServiceInterface} from "../subscription/subscription-service
 import {NotificationServiceInterface} from "../notification/notification-service.interface.js";
 import {CreateNotificationDto} from "../notification/dto/create-notification.dto.js";
 import {UserServiceInterface} from "../user/user-service.interface.js";
+import {globalEmitter} from "../../../main.rest.js";
 const { sendNotification } = pkg;
 
 @injectable()
@@ -50,7 +51,7 @@ export class DefaultBreakService implements BreakServiceInterface {
         }
 
         await this.notificationService.create(notificationObj);
-        await this.userService.increaseNotificationCount();
+        this.userService.increaseNotificationCount();
 
         if (subscriptions) {
             subscriptions.map(sub => {
@@ -112,7 +113,9 @@ export class DefaultBreakService implements BreakServiceInterface {
 
             await this.notificationService.create(notificationObj as CreateNotificationDto);
 
-            await this.userService.increaseNotificationCount();
+            this.userService.increaseNotificationCount();
+
+            globalEmitter.emit('update', 'Update');
 
             if (subscriptions) {
                 subscriptions.map(sub => {

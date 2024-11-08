@@ -5,7 +5,7 @@ import {SubscriptionEntity} from "./subscription.entity.js";
 
 import {Component} from "../../types/index.js";
 import {types} from "@typegoose/typegoose";
-import {PushSubscription} from "web-push";
+import {PushSubscriptionDTO} from "./dto/create-subscription.dto.js";
 
 @injectable()
 export class SubscriptionService implements SubscriptionServiceInterface {
@@ -13,8 +13,9 @@ export class SubscriptionService implements SubscriptionServiceInterface {
         @inject(Component.SubscriptionModel) private readonly subscriptionModel: types.ModelType<SubscriptionEntity>
     ) {}
 
-    public async create(dto: PushSubscription): Promise<DocumentType<SubscriptionEntity>> {
-        const result = await this.subscriptionModel.create(dto);
+    public async create(dto: PushSubscriptionDTO): Promise<DocumentType<SubscriptionEntity>> {
+        const subsNotExp = {...dto, expirationTime: null};
+        const result = await this.subscriptionModel.create(subsNotExp);
 
         return result;
     }

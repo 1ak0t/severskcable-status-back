@@ -14,10 +14,10 @@ import {LoginUserRequest} from "./login-user-request.js";
 import {LoggedUserRdo} from "./rdo/logged-user.rdo.js";
 import {AuthServiceInterface} from "../auth/auth-service.interface.js";
 import {ParamUserType} from "./types/param-user.type.js";
-import {PushSubscription} from "web-push";
 import {SubscriptionServiceInterface} from "../subscription/subscription-service.interface.js";
 import {ValidateObjectidMiddleware} from "../../libs/rest/middleware/validate-objectid.middleware.js";
 import {PrivateRouteMiddleware} from "../../libs/rest/middleware/private-route.middleware.js";
+import {PushSubscriptionDTO} from "../subscription/dto/create-subscription.dto.js";
 
 @injectable()
 export class UserController extends BaseControllerAbstract {
@@ -39,6 +39,12 @@ export class UserController extends BaseControllerAbstract {
             handler: this.getAll,
             middlewares: [new PrivateRouteMiddleware()]
         });
+        this.addRoute({
+            path: '/:userId/info',
+            method: HttpMethodEnum.Get,
+            handler: this.getUserInfo,
+            middlewares: [new PrivateRouteMiddleware()]
+        });
         this.addRoute({path: '/login', method: HttpMethodEnum.Post, handler: this.login});
         this.addRoute({
             path: '/login',
@@ -50,7 +56,7 @@ export class UserController extends BaseControllerAbstract {
             path: '/:userId/subscribe',
             method: HttpMethodEnum.Post,
             handler: this.subscribe,
-            middlewares: [new ValidateObjectidMiddleware('userId'), new PrivateRouteMiddleware()]
+            middlewares: [new ValidateObjectidMiddleware('userId')]
         });
         this.addRoute({
             path: '/:userId/reset-notification-status',
@@ -82,6 +88,14 @@ export class UserController extends BaseControllerAbstract {
         const users = await this.userService.find();
         const responseData = fillDTO(UserRdo, users);
         this.ok(res, responseData);
+    }
+
+    public async getUserInfo(
+        {params} : Request<ParamUserType, unknown, unknown>,
+            res: Response,
+        ): Promise<void> {
+        const user = await this.userService.findById(params.userId);
+        this.ok(res, user?.notificationsCount);
     }
 
     public async login(
@@ -117,7 +131,7 @@ export class UserController extends BaseControllerAbstract {
     }
 
     public async subscribe(
-        {body, params} : Request<ParamUserType, unknown, PushSubscription>,
+        {body, params} : Request<ParamUserType, unknown, PushSubscriptionDTO>,
         res: Response,
     ): Promise<void> {
         const userId = params.userId;
@@ -134,8 +148,8 @@ export class UserController extends BaseControllerAbstract {
     ): Promise<void> {
         const userId = params.userId;
 
-        await this.userService.resetNotificationCount(userId);
+        this.userService.resetNotificationCount(userId);
 
-        this.created(res, "Success");
+        this.ok(res, "Success");
     }
 }

@@ -39,9 +39,8 @@ export class UserEntity extends defaultClasses.TimeStamps implements UserType {
 
     @prop({
         ref: SubscriptionEntity,
-        required: true,
     })
-    subscription: Ref<SubscriptionEntity>;
+    subscription?: Ref<SubscriptionEntity>;
 
     @prop()
     public notificationsCount?: number;

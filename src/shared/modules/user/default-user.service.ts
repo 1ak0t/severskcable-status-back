@@ -30,7 +30,11 @@ export class DefaultUserService implements UserServiceInterface {
         return users;
     }
 
-    public async findByEmail(email: string): Promise<DocumentType<UserEntity> | null> {
+    public async findById(userId: string): Promise<DocumentType<UserEntity> | null> {
+        return this.userModel.findById(userId);
+    }
+
+    public async findByEmail(email:string): Promise<DocumentType<UserEntity> | null> {
         return this.userModel.findOne({email});
     }
 
@@ -52,7 +56,7 @@ export class DefaultUserService implements UserServiceInterface {
         const users = await this.userModel.find().exec();
         users.map(user => {
             if (user.notificationsCount !== undefined) {
-                this.findByIdAndUpdate(user.id, {notificationsCount: user.notificationsCount++});
+                this.findByIdAndUpdate(user.id, {notificationsCount: user.notificationsCount + 1});
             } else {
                 this.findByIdAndUpdate(user.id, {notificationsCount: 1});
             }

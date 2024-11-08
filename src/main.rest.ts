@@ -12,6 +12,9 @@ import {
 import {createAuthContainer} from "./shared/modules/auth/auth.container.js";
 import {createSubscriptionContainer} from "./shared/modules/subscription/subscription.container.js";
 import {createNotificationContainer} from "./shared/modules/notification/notification.container.js";
+import { EventEmitter } from 'node:events';
+
+export const globalEmitter = new EventEmitter();
 
 async function bootstrap() {
     const appContainer = Container.merge(
