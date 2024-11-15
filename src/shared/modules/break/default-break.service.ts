@@ -69,7 +69,8 @@ export class DefaultBreakService implements BreakServiceInterface {
                 'registerPerson',
                 'successPerson',
                 'repairingPerson',
-                'repairCompletedPerson'
+                'repairCompletedPerson',
+                'repairEndPerson'
             ])
             .exec();
     }

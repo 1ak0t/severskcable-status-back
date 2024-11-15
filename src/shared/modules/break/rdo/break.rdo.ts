@@ -45,6 +45,13 @@ export class BreakRdo {
     @Expose()
     repairCompletedImage?: string | undefined;
     @Expose()
+    @Type(() => UserRdo)
+    repairEndPerson?: string;
+    @Expose()
+    repairEndDate?: string;
+    @Expose()
+    repairEndComment?: string;
+    @Expose()
     public priority: number;
     @Expose()
     public status: boolean;

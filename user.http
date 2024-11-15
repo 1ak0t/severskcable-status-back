@@ -3,14 +3,14 @@ POST https://corp.severskcable.ru:4875/users/register HTTP/1.1
 Content-Type: application/json
 
 {
-  "surname": "Часова",
-  "name": "Екатерина",
-  "middleName": "Валерьевна",
-  "email": "pd_head@severskcable.ru",
+  "surname": "Кривоногов",
+  "name": "Андрей",
+  "middleName": "Николаевич",
+  "email": "krian@severskcable.ru",
   "role": [
     "ИТР"
   ],
-  "password": "TXfcjdf555"
+  "password": "w0rdp4s$1107"
  }
 
 ###
