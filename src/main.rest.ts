@@ -13,6 +13,7 @@ import {createAuthContainer} from "./shared/modules/auth/auth.container.js";
 import {createSubscriptionContainer} from "./shared/modules/subscription/subscription.container.js";
 import {createNotificationContainer} from "./shared/modules/notification/notification.container.js";
 import { EventEmitter } from 'node:events';
+import {createSupplyContainer} from "./shared/modules/supply/supply.container.js";
 
 export const globalEmitter = new EventEmitter();
 
@@ -25,7 +26,8 @@ async function bootstrap() {
         createBreakTypeByMachineContainer(),
         createAuthContainer(),
         createSubscriptionContainer(),
-        createNotificationContainer()
+        createNotificationContainer(),
+        createSupplyContainer()
     );
 
     const application = appContainer.get<RestApplication>(Component.RestApplication);

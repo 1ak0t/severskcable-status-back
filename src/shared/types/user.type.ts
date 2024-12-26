@@ -4,7 +4,8 @@ export enum UserRoles {
     Engineers = "Инженеры",
     HeadEngineer = "Главный инженер",
     CEO = "Генеральный директор",
-    Admin = "Администратор"
+    Admin = "Администратор",
+    Supply = "Снабжение"
 }
 
 export type UserType = {

@@ -4,7 +4,8 @@ export enum RepairStage {
     Register = "Зарегистрирована",
     RepairSuccess = "Поломка потверждена",
     Repairing = "Ремонт",
-    RepairCompleted = "Ремонт выполнен"
+    RepairCompleted = "Ремонт выполнен",
+    Supply = "Ожидает снабжения"
 }
 
 export type BreakType = {

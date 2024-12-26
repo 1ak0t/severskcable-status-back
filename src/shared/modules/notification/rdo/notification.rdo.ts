@@ -1,4 +1,5 @@
 import {Expose} from "class-transformer";
+import {UserRoles} from "../../../types/user.type.js";
 
 export class NotificationRdo {
     @Expose()
@@ -9,4 +10,6 @@ export class NotificationRdo {
     public text: string;
     @Expose()
     public createdAt: string;
+    @Expose()
+    public roles: UserRoles[];
 }

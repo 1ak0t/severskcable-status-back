@@ -1,3 +1,5 @@
+import {UserRoles} from "../../../types/user.type.js";
+
 export interface PushSubscriptionDTO {
     endpoint: string;
     expirationTime: number | null;
@@ -5,4 +7,5 @@ export interface PushSubscriptionDTO {
         p256dh: string;
         auth: string;
     };
+    roles: UserRoles;
 }

@@ -24,4 +24,7 @@ export const Component = {
     NotificationModel:Symbol.for('NotificationModel'),
     NotificationService:Symbol.for('NotificationService'),
     NotificationController:Symbol.for('NotificationController'),
+    SupplyModel: Symbol.for('SupplyModel'),
+    SupplyService: Symbol.for('SupplyService'),
+    SupplyController: Symbol.for('SupplyController'),
 } as const;

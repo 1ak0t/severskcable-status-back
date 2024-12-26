@@ -3,14 +3,14 @@ POST https://corp.severskcable.ru:4875/users/register HTTP/1.1
 Content-Type: application/json
 
 {
-  "surname": "Кривоногов",
-  "name": "Андрей",
+  "surname": "Иванников",
+  "name": "Николай",
   "middleName": "Николаевич",
-  "email": "krian@severskcable.ru",
+  "email": "inn@severskcable.ru",
   "role": [
-    "ИТР"
+    "Снабжение"
   ],
-  "password": "w0rdp4s$1107"
+  "password": "7fNBY6Ar"
  }
 
 ###
@@ -109,4 +109,27 @@ Content-Type: application/json
 
 ###
 GET http://localhost:5000/break-types-by-machine/ HTTP/1.1
+Content-Type: application/json
+
+###
+POST http://localhost:5000/supplies/ HTTP/1.1
+Content-Type: application/json
+
+{
+  "break": "67551cca327ea222ca4eeca5",
+  "supplyDescription": "Test supply 2",
+  "supplyImage": "",
+  "supplyStatus": "Ожидает оплаты"
+}
+
+###
+PATCH http://localhost:5000/supplies/6759198ba72c1748e8be0195/change-status/ HTTP/1.1
+Content-Type: application/json
+
+{
+  "supplyStatus": "Ожидает поступления"
+}
+
+###
+GET http://localhost:5000/supplies/67551cca327ea222ca4eeca5/find-by-break/ HTTP/1.1
 Content-Type: application/json
