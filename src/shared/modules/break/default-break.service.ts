@@ -16,6 +16,8 @@ import {NotificationServiceInterface} from "../notification/notification-service
 import {CreateNotificationDto} from "../notification/dto/create-notification.dto.js";
 import {UserServiceInterface} from "../user/user-service.interface.js";
 import {globalEmitter} from "../../../main.rest.js";
+import {UserRoles} from "../../types/user.type.js";
+
 const { sendNotification } = pkg;
 
 @injectable()
@@ -42,7 +44,16 @@ export class DefaultBreakService implements BreakServiceInterface {
 
 
         const machine = await this.machineService.findById(dto.machine);
-        const subscriptions = await this.subscriptionService.getAll();
+        const rolesForSubs = [
+            UserRoles.CEO,
+            UserRoles.ITR,
+            UserRoles.Admin,
+            UserRoles.Engineers,
+            UserRoles.HeadEngineer,
+            UserRoles.Operator
+        ];
+
+        const subscriptions = await this.subscriptionService.getAll(rolesForSubs);
 
         const notificationObj = {
             title: `Новая поломка оборудования - ${machine?.name}`,
@@ -95,7 +106,17 @@ export class DefaultBreakService implements BreakServiceInterface {
 
         if(dto.machine) {
             const machine = await this.machineService.findById(dto.machine);
-            const subscriptions = await this.subscriptionService.getAll();
+            const rolesForSubs = [
+                UserRoles.CEO,
+                UserRoles.ITR,
+                UserRoles.Admin,
+                UserRoles.Engineers,
+                UserRoles.HeadEngineer,
+                UserRoles.Operator
+            ];
+
+            const subscriptions = await this.subscriptionService.getAll(rolesForSubs);
+
             let notificationObj = {};
 
             if (updateById?.stages !== null) {

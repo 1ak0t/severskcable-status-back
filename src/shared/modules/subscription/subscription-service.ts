@@ -6,6 +6,8 @@ import {SubscriptionEntity} from "./subscription.entity.js";
 import {Component} from "../../types/index.js";
 import {types} from "@typegoose/typegoose";
 import {PushSubscriptionDTO} from "./dto/create-subscription.dto.js";
+import {UserRoles} from "../../types/user.type.js";
+import {Document, Types} from "mongoose";
 
 @injectable()
 export class SubscriptionService implements SubscriptionServiceInterface {
@@ -20,9 +22,19 @@ export class SubscriptionService implements SubscriptionServiceInterface {
         return result;
     }
 
-    public async getAll(): Promise<DocumentType<SubscriptionEntity>[]> {
-        const subscriptions = await this.subscriptionModel.find().select("-_id -createdAt -updatedAt -__v").exec();
+    public async getAll(roles: UserRoles[]): Promise<DocumentType<SubscriptionEntity>[]> {
+        let allSubs: (Document<unknown, types.BeAnObject, SubscriptionEntity> & Omit<SubscriptionEntity & Required<{     _id: Types.ObjectId }>, "typegooseName"> & types.IObjectWithTypegooseFunction)[] = [];
+        for (const role of roles) {
+            const subs = await this.subscriptionModel.find({"roles": {$in: [role]}}).select("-_id -createdAt -updatedAt -__v -roles").exec();
+            allSubs.push(...subs);
+        }
 
-        return subscriptions;
+        allSubs = allSubs.filter((value: any, index: any, self: any) =>
+                index === self.findIndex((t: any) => (
+                    t.endpoint === value.endpoint
+                ))
+        )
+
+        return allSubs;
     }
 }

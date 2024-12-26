@@ -26,7 +26,7 @@ export class UserController extends BaseControllerAbstract {
         @inject(Component.UserService) private readonly userService: UserServiceInterface,
         @inject(Component.Config) private readonly configService: ConfigInterface<RestSchema>,
         @inject(Component.AuthService) private readonly authService: AuthServiceInterface,
-        @inject(Component.SubscriptionService) private readonly subscriptionService: SubscriptionServiceInterface
+        @inject(Component.SubscriptionService) private readonly subscriptionService: SubscriptionServiceInterface,
     ) {
         super(logger);
 
@@ -135,8 +135,10 @@ export class UserController extends BaseControllerAbstract {
         res: Response,
     ): Promise<void> {
         const userId = params.userId;
+        const user = await this.userService.findById(params.userId);
+        const updatedDTO = {...body, roles: user?.role};
 
-        const subscription = await this.subscriptionService.create(body);
+        const subscription = await this.subscriptionService.create(updatedDTO);
         await this.userService.findByIdAndUpdate(userId, {subscription: subscription.id});
 
         this.created(res, "Success");
