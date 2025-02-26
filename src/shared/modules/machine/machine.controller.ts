@@ -41,6 +41,12 @@ export class MachineController extends BaseControllerAbstract {
             handler: this.update,
             middlewares: [new ValidateObjectidMiddleware('machineId'), new PrivateRouteMiddleware()]
         });
+        this.addRoute({
+            path: '/:machineId',
+            method: HttpMethodEnum.Get,
+            handler: this.findById,
+            middlewares: [new ValidateObjectidMiddleware('machineId'), new PrivateRouteMiddleware()]
+        });
     }
 
     public async getAll(_req: Request, res: Response): Promise<void> {
@@ -64,10 +70,25 @@ export class MachineController extends BaseControllerAbstract {
             throw new HttpError(
                 StatusCodes.NOT_FOUND,
                 `Offer with id ${params.machineId} not found.`,
-                'OfferController'
+                'MachineController'
             );
         }
 
         this.ok(res, fillDTO(MachineRdo, updatedMachine));
+    }
+
+    public async findById({params}: Request<ParamMachineidType>, res: Response): Promise<void> {
+        const {machineId} = params;
+        const machine = await this.machineService.findById(machineId);
+
+        if (!machine) {
+            throw new HttpError(
+                StatusCodes.NOT_FOUND,
+                `Machine with id ${machineId} not found.`,
+                'MachineController'
+            );
+        }
+
+        this.ok(res, fillDTO(MachineRdo, machine));
     }
 }

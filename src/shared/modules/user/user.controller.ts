@@ -86,7 +86,7 @@ export class UserController extends BaseControllerAbstract {
 
     public async getAll(_req: Request, res: Response): Promise<void> {
         const users = await this.userService.find();
-        const responseData = fillDTO(UserRdo, users);
+        const responseData = fillDTO(LoggedUserRdo, users);
         this.ok(res, responseData);
     }
 
